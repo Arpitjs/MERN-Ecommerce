@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { auth } from '../../firebase'
 import { toast } from 'react-toastify'
-import { SyncOutlined } from '@ant-design/icons'
+import AuthForm from '../../components/Forms/AuthForm'
 
 let Register = () => {
 let [email, setEmail] = useState("")
@@ -20,25 +20,13 @@ let [submitting, setSubmitting] = useState(false)
         setEmail('')
         setSubmitting(false)
     }
-        return (
-            <div className="container p-5">
-                <div className="row">
-                    <div className="col-md-6 offset-md-3">
-                        <h4>Register</h4>
-                        <form>
-                            <input type="email" value={email} placeholder="email"
-                            onChange={e => setEmail(e.target.value)}
-                            autoFocus
-                            className="form-control"/>
-                    { submitting ? <SyncOutlined></SyncOutlined> :
-                    <button type="submit"
-                            className="btn btn-raised" onClick={handleRegister}>Register</button>}
-                           
-                        </form>
-                    </div>
-                </div>
-            </div>
-        )
+    return (
+        <AuthForm  
+        email={email}
+        setEmail={setEmail}
+        submitting={submitting}
+        handleRegister={handleRegister} />
+     )
 }
 
 export default Register
