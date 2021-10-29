@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon -r esm app.js"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +12,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
+    "express-jwt": "^6.1.0",
+    "firebase-admin": "^10.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0"
   }

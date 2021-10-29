@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { auth } from '../../firebase'
 import { toast } from 'react-toastify'
 import { SyncOutlined } from '@ant-design/icons'
+import { useDispatch, useSelector } from 'react-redux'
+import {CreateOrGetUser} from '../../functions/UserInfo'
 
 let RegisterComplete = ({ history }) => {
 let [email, setEmail] = useState("")
 let [password, setPassword] = useState("")
 let [submitting, setSubmitting] = useState(false)
+let dispatch = useDispatch()
+let { user } = useSelector(state => ({ ...state }))
 
-    useEffect(() => setEmail(localStorage.getItem('email')), [])
+    useEffect(() => {
+        setEmail(localStorage.getItem('email'))
+        if(user && user.token) history.push('/')
+    }, [user, history])
 
     let handleRegisterComplete = async (e) => {
         setSubmitting(true)
@@ -30,15 +37,28 @@ let [submitting, setSubmitting] = useState(false)
                 let user = auth.currentUser
                 await user.updatePassword(password)
                 //get user id token (jwt)
-                let id = await user.getIdTokenResult()
+                let idTokenResult = await user.getIdTokenResult()
                 //redux store
+                CreateOrGetUser(idTokenResult, '/create-or-update-user')
+                .then(response => {
+                    dispatch({
+                   type: 'LOGGED_IN_USER',
+                   payload: {
+                       email: response.data.email,
+                       name: response.data.name,
+                       token: idTokenResult.token,
+                       role: response.data.role,
+                       _id: response.data._id
+                   }
+               })
+               })
+               .catch(err => toast.error(err))
                 //redirect the user
-                console.log('USER', user)
-                console.log('ID', id)
-                // history.push('/')
+                history.push('/')
             }
         } catch (e) {
             setSubmitting(false)
+            console.log(e.message)
             toast.error(e.message)
         }
     }

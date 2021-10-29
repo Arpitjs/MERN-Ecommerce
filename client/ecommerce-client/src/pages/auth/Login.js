@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { auth, googleAuthProvider } from '../../firebase'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
 import AuthForm from '../../components/Forms/AuthForm'
-import { useDispatch } from 'react-redux'
+import { CreateOrGetUser } from '../../functions/UserInfo'
 
 let Login = ({ history }) => {
     let [email, setEmail] = useState("")
@@ -10,6 +11,20 @@ let Login = ({ history }) => {
     let [submitting, setSubmitting] = useState(false)
 
     let dispatch = useDispatch()
+    let { user } = useSelector(state => ({ ...state }))
+
+    useEffect(() => {
+        if(user && user.token) history.push('/')
+    }, [user, history])
+
+    const roleBasedRedirect = response => {
+        if(response.data.role === 'admin') {
+            history.push('/admin/dashboard')
+        } else {
+            history.push('/user/history')
+        }
+    }
+
     //this actually registers a new user as well
     let googleLogin = async e => {
         e.preventDefault()
@@ -17,16 +32,22 @@ let Login = ({ history }) => {
         .then(async result => {
             let { user } = result
             let idTokenResult = await user.getIdTokenResult()
+          CreateOrGetUser(idTokenResult, '/create-or-update-user')
+          .then(response => {
             dispatch({
-                type: 'LOGGED_IN_USER',
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token
-                }
-            })
-            history.push('/')
+           type: 'LOGGED_IN_USER',
+           payload: {
+               email: response.data.email,
+               name: response.data.name,
+               token: idTokenResult.token,
+               role: response.data.role,
+               _id: response.data._id
+           }
+       })
+       roleBasedRedirect(response)
+       })
         })
-        .catch(err => toast(err.message))
+       .catch(err => toast.error(err))
     }
 
     let handleLogin = async (e) => {
@@ -37,14 +58,21 @@ let Login = ({ history }) => {
             setSubmitting(false)
             let { user } = result
             let idTokenResult = await user.getIdTokenResult()
-            dispatch({
-                type: 'LOGGED_IN_USER',
-                payload: {
-                    email: user.email,
-                    token: idTokenResult.token
-                }
-            })
-            history.push('/')
+            CreateOrGetUser(idTokenResult, '/create-or-update-user')
+            .then(response => {
+                dispatch({
+               type: 'LOGGED_IN_USER',
+               payload: {
+                   email: response.data.email,
+                   name: response.data.name,
+                   token: idTokenResult.token,
+                   role: response.data.role,
+                   _id: response.data._id
+               }
+           })
+           roleBasedRedirect(response)
+           })
+           .catch(err => toast.error(err.message))
         } catch (e) {
             setSubmitting(false)
             toast.error(e.message)
