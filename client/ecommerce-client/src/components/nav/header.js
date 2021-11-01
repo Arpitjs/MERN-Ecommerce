@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Menu } from 'antd'
 import firebase from 'firebase'
 import { useDispatch, useSelector } from 'react-redux'
-import { useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import {
     AppstoreOutlined, 
     SettingOutlined,
@@ -46,8 +46,14 @@ let Header = () => {
                 </Item> 
                 </> :
                 <SubMenu icon={<SettingOutlined />} title={state.user.email.split('@')[0]} key="s">
-                        <Item key="setting:1">Option 1</Item>
-                        <Item key="setting:2">Option 2</Item>
+                       {state.user && state.user.role === 'subscriber' ? 
+                       <Item key="user">
+                           <Link to="/user/history">Dashboard</Link>
+                       </Item> :
+                        <Item key="admin">
+                            <Link to="/admin/dashboard">Dashboard</Link>
+                        </Item> }
+                       
                         <Item key="logout" onClick={logout}
                         icon={<LogoutOutlined />}>Logout</Item>
                 </SubMenu>

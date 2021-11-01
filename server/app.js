@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import fs from 'fs'
+
 let morgan = require('morgan')
 require('dotenv').config({path: './config.env'})
 
@@ -16,7 +17,9 @@ mongoose.connect(process.env.DATABASE, {
 
 app.use(morgan('dev'))
 app.use(express.json({ limit: '200mb' }))
+app.use(express.urlencoded({ extended: true }))
 app.use(cors())
+
 fs.readdirSync('./routes')
 .map(route => app.use('/api', require(`./routes/${route}`)))
 
