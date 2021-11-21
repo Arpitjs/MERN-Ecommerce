@@ -39,14 +39,13 @@ export const read = async (req, res, next) => {
 }
 
 export const update = async (req, res, next) => {
-    let { name } = req.body
+    let { name, parent } = req.body
     try {
-        res.json(
-            await SubCategory
-            .findOneAndUpdate({ slug: req.params.slug }, {
-                name, slug: slugify(name)
-            },{ new: true})
-        )
+      let sub = await SubCategory.findOneAndUpdate({ slug: req.params.slug, parent }, { name, slug: slugify(name) }, {
+          new: true
+      })
+      if(!sub) next({ msg: 'cannot update sub of a different category.', status: 400 })
+      res.json(sub)
     } catch (e) {
         next({ msg: e })
     }

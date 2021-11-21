@@ -6,7 +6,8 @@ import {
     read,
     update,
     remove,
-    list
+    list,
+    getSubs
 } from '../controllers/category'
 
 router.get('/categories', list)
@@ -14,5 +15,6 @@ router.get('/category/:slug', read)
 router.post('/category', authCheck, adminCheck, create)
 router.patch('/category/:slug', authCheck, adminCheck, update)
 router.delete('/category/:slug', authCheck, adminCheck, remove)
+router.get('/category/subs/:id', getSubs)
 
 module.exports = router

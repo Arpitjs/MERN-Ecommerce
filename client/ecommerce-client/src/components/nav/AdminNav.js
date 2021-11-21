@@ -9,7 +9,7 @@ const AdminNav = () => {
                 className="nav-link">Dasboard</Link>
             </li>
             <li className="nav-item">
-                <Link to="/admin/prodcut"
+                <Link to="/admin/product"
                 className="nav-link">Product</Link>
             </li>
             <li className="nav-item">

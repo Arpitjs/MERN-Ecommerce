@@ -1,4 +1,5 @@
 import Category from '../models/Category'
+import SubCategory from '../models/SubCategory'
 import slugify from 'slugify'
 
 export const create = async (req, res, next) => {
@@ -62,3 +63,11 @@ export const remove = async (req, res, next) => {
     }
 }
 
+export const getSubs = async(req, res, next) => {
+    try {
+        let sub = await SubCategory.find({ parent: req.params.id })
+        res.json(sub)
+    } catch (e) {
+        next({ msg: e })
+    }
+}

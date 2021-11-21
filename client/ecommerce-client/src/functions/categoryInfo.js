@@ -21,6 +21,7 @@ export const modifyCategory = (token, data, slug, method) => {
       })
 }
 
+export const getCategorySub = id => axios.get(`${process.env.REACT_APP_API}/category/subs/${id}`)
 
 //sub categories
 export const getSubs = () => axios.get(`${process.env.REACT_APP_API}/subs`)
