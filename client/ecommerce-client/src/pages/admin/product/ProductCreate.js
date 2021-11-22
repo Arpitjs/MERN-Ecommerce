@@ -5,6 +5,8 @@ import AdminNav from "../../../components/nav/AdminNav"
 import { createProduct } from '../../../functions/productInfo'
 import { getCategories, getCategorySub } from '../../../functions/categoryInfo'
 import ProductForm from "../../../components/Forms/ProductForm"
+import FileUpload from "../../../components/Forms/FileUpload"
+import { LoadingOutlined } from '@ant-design/icons'
 
 const ProductCreate = () => {
     let { user } = useSelector(state => ({ ...state }))
@@ -73,8 +75,16 @@ const ProductCreate = () => {
                     <AdminNav />
                 </div>
                 <div className="col-md-10">
-                    <h4>Product create</h4>
+                    { loading ? <LoadingOutlined /> : <h3>Product create</h3>}
                     <hr />
+                    {/* {JSON.stringify(values.images)} */}
+                    <div className="p-3">
+                        <FileUpload
+                        values={values}
+                        setValues={setValues}
+                        setLoading={setLoading}
+                        />
+                    </div>
                     <ProductForm
                         values={values}
                         handleChange={handleChange}
