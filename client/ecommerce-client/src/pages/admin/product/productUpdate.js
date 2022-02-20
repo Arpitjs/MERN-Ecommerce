@@ -2,24 +2,24 @@ import { useState, useEffect } from "react"
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import AdminNav from "../../../components/nav/AdminNav"
-import { createProduct } from '../../../functions/productInfo'
+import { getProduct, modifyProduct } from '../../../functions/productInfo'
 import { getCategories, getCategorySub } from '../../../functions/categoryInfo'
 import ProductForm from "../../../components/Forms/ProductForm"
 import FileUpload from "../../../components/Forms/FileUpload"
 import { LoadingOutlined } from '@ant-design/icons'
+import { useParams } from 'react-router-dom';
 
-const ProductCreate = () => {
+const ProductUpdate = () => {
     let { user } = useSelector(state => ({ ...state }))
     let [loading, setLoading] = useState(false)
-    let [subsActive, setSubsActive] = useState(false)
     let [subOptions, setSubOptions] = useState([])
+    const [subsIds, setSubsIds] = useState([]);
+    const { slug } = useParams();
 
     let [values, setValues] = useState({
         title: '',
         description: '',
         price: '',
-        category: '',
-        categories: [],
         subs: [],
         shipping: '',
         quantity: '',
@@ -29,25 +29,40 @@ const ProductCreate = () => {
         color: '',
         brand: ''
     })
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        loadCategories()
-    }, [])
+        loadCategories();
+        loadProduct();
+    }, []);
+
+    const loadProduct = () => {
+        getProduct(slug).then(({ data }) => {
+            //load single product
+            setValues({...values, ...data})
+            //load single product category's subs
+            getCategorySub(data.category._id)
+            .then(res => setSubOptions(res.data)); //on first load show default subs
+            //prepare array of subs ids to show as default sub values in antd select
+            let arr = [];
+            data.subs.forEach(s => arr.push(s._id));
+            setSubsIds(() => arr);
+        })
+    }
 
     let loadCategories = () => getCategories()
-        .then(({ data }) => setValues({...values, categories: data }))
+        .then(({ data }) => setCategories(data));
  
     let handleSubmit = e => {
         e.preventDefault()
         setLoading(true)
-        createProduct(user.token, values)
+            modifyProduct(user.token, values, slug, "put")
             .then(({ data }) => {
                 setLoading(false)
-                toast.success(`product ${data.title} created.`)
+                toast.success(`product ${data.title} updated!!.`)
                 window.location.reload()
             })
             .catch(err => {
-                // console.log('ERR', err)
                 let error = err.response.data.msg
                 console.log(error)
                 setLoading(false)
@@ -64,9 +79,12 @@ const ProductCreate = () => {
     let handleCategoryChange = (e) => {
         e.preventDefault()
         setValues({...values, category: e.target.value, subs: [] })
-        getCategorySub(e.target.value).then(({ data }) => setSubOptions(data))
-        // console.log('SUB OPTIONS>>', subOptions);
-        setSubsActive(true)
+        getCategorySub(e.target.value)
+        .then(({ data }) => setSubOptions(data))
+        if(values.category._id === e.target.value) {
+            loadProduct();
+        }
+        setSubsIds([]);
     }
 
     return (
@@ -76,9 +94,8 @@ const ProductCreate = () => {
                     <AdminNav />
                 </div>
                 <div className="col-md-10">
-                    { loading ? <LoadingOutlined /> : <h3>Product create</h3>}
+                    { loading ? <LoadingOutlined /> : <h3>Product update</h3>}
                     <hr />
-                    {/* {JSON.stringify(values.images)} */}
                     <div className="p-3">
                         <FileUpload
                         values={values}
@@ -93,8 +110,11 @@ const ProductCreate = () => {
                         handleSubmit={handleSubmit}
                         loading={loading}
                         setValues={setValues}
-                        subsActive={subsActive}
                         subOptions={subOptions}
+                        edit={true}
+                        categories={categories}
+                        subsIds={subsIds}
+                        setSubsIds={setSubsIds}
                     />
                 </div>
             </div>
@@ -102,4 +122,4 @@ const ProductCreate = () => {
     )
 }
 
-export default ProductCreate
+export default ProductUpdate;

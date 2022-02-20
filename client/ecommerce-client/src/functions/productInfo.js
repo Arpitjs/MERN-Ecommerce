@@ -1,9 +1,11 @@
 import axios from 'axios'
 
 //products
-export const getProducts = () => axios.get(`${process.env.REACT_APP_API}/product`)
+export const getProducts = () => axios.get(`${process.env.REACT_APP_API}/products`)
 
 export const getProduct = slug => axios.get(`${process.env.REACT_APP_API}/product/${slug}`)
+
+export const deleteProduct = slug => axios.delete(`${process.env.REACT_APP_API}/product/${slug}`)
 
 export const createProduct = (token, data) => {
     return axios.post(`${process.env.REACT_APP_API}/product`,

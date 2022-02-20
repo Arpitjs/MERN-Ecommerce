@@ -34,7 +34,6 @@ const FileUpload = ({ values, setValues, setLoading }) => {
                     }, "base64")
             }
         }
-        //set url to images[] in productCreate
     }
     const removeImage = id => {
         setLoading(true)
