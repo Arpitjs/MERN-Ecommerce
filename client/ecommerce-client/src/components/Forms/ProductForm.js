@@ -123,14 +123,11 @@ const ProductForm = ({
       <div className="form-group">
         <label>Shipping</label>
         <select
-          value={
-            edit ? (values.shipping === "Yes" ? "Yes" : "No") : "Please Select"
-          }
           name="shipping"
           className="form-control"
           onChange={handleChange}
         >
-          <option>Please select</option>
+          <option>{ edit ? values.shipping === 'Yes' ? 'Yes' : 'No' : 'please select' } </option>
           <option value="No">No</option>
           <option value="Yes">Yes</option>
         </select>

@@ -18,7 +18,20 @@ export const read = async (req, res, next) => {
     try {
         res.json(
             await Product.find({})
-                .limit(10)
+                .populate('category')
+                .populate('subs')
+                .sort([['createdAt', 'desc']])
+        )
+    } catch (e) {
+        next({ msg: e })
+    }
+}
+
+export const readByCount = async (req, res, next) => {
+    try {
+        res.json(
+            await Product.find({})
+                .limit(parseInt(req.params.count))
                 .populate('category')
                 .populate('subs')
                 .sort([['createdAt', 'desc']])
@@ -50,7 +63,6 @@ export const update = async (req, res, next) => {
     }
 }
 
-
 export const remove = async (req, res, next) => {
     try {
         await Product.findOneAndRemove({ slug: req.params.slug })
@@ -58,4 +70,29 @@ export const remove = async (req, res, next) => {
     } catch (e) {
         next({ msg: e })
     }
+}
+
+export const list = async (req, res, next) => {
+    console.table(req.query);
+    try {
+    const {sort, order, page } = req.query;
+    const currentPage = +page || 1;
+    const perPage = 3;
+
+    const products = await Product.find({})
+    .skip((currentPage - 1) * perPage)
+    .populate('category').populate('subs')
+    .sort([[sort, order]])
+    .limit(perPage);
+
+    res.json({ products });
+    } catch (e) {
+        next({ msg: e });
+    }
+}
+
+export const productsCount = async (req, res, next) => {
+    const total = await Product.find({})
+    .estimatedDocumentCount();
+    res.json(total);
 }
