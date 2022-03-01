@@ -24,6 +24,7 @@ import ProductCreate from './pages/admin/product/ProductCreate'
 import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/productUpdate';
 import Product from './pages/Product';
+import Shop from './pages/Shop';
 
 let App = () => {
   let dispatch = useDispatch()
@@ -65,6 +66,8 @@ let App = () => {
           component={ForgotPassword} />
            <Route exact path="/product/:slug"
           component={Product} />
+             <Route exact path="/shop"
+          component={Shop} />
           
              <UserRoute exact path="/user/history"
           component={History} />

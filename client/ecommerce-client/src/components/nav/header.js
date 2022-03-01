@@ -8,9 +8,12 @@ import {
     SettingOutlined,
     UserOutlined,
     UserAddOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    ShoppingOutlined
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
+import Search from '../Forms/Search';
+
 let { SubMenu, Item } = Menu
 
 let Header = () => {
@@ -36,6 +39,9 @@ let Header = () => {
                 <Item key="home" icon={<AppstoreOutlined />}>
                     <Link to="/">Home</Link>
                 </Item>
+                <Item key="shop" icon={<ShoppingOutlined />}>
+                    <Link to="/shop">Shop</Link>
+                </Item>
               {!state.user ? <>
                 <Item key="register" icon={<UserAddOutlined />} className="float-right">
                 <Link to="/login">Login</Link>
@@ -58,6 +64,9 @@ let Header = () => {
                         icon={<LogoutOutlined />}>Logout</Item>
                 </SubMenu>
                }
+               <span className='float-right p-1'>
+                   <Search />
+               </span>
             </Menu>
         )
 }

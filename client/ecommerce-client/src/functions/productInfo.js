@@ -52,3 +52,11 @@ export const getRelated = (id) => {
     `${process.env.REACT_APP_API}/product/related/${id}`
   );
 };
+
+
+export const fetchProductsByFilter = (query) => {
+  return axios.post(
+    `${process.env.REACT_APP_API}/search/filters`,
+    query
+  );
+};

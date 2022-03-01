@@ -157,3 +157,127 @@ export const listRelated = async (req, res, next) => {
     next({ msg: e });
   }
 }
+
+async function handleQuery(req, res, query) {
+  console.log(query);
+  const products = await Product
+  .find({ 
+    $text: { $search: query }
+  })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+
+  res.json(products);
+}
+
+async function handlePrice(req, res, price) {
+  if(price[1] === 0) return res.json(await Product.find({}));
+  const products = await Product.find({
+    price: { $gte: price[0], $lte: price[1] }
+  })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+
+  res.json(products);
+}
+
+async function handleCategory(req, res, category) {
+  if(category.length === 0) return res.json(await Product.find({}));
+  const products = await Product.find({ category })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+  
+  res.json(products);
+}
+
+async function handleSub(req, res, sub) {
+  const products = await Product.find({ subs: sub })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+  
+  res.json(products);
+}
+
+  function handleStars(req, res, stars) {
+  Product.aggregate([
+   {
+    $project: {
+      document: "$$ROOT",
+      floorAverage: {
+        $floor: { $avg: "$ratings.star" }
+      }
+    }
+   },
+   {
+     $match: { floorAverage: stars }
+   }
+  ])
+  .exec((err, aggregates) => {
+    if(err) return res.status(400).json(err);
+    Product.find({ _id: aggregates })
+    .populate('category', '_id name')
+    .populate('subs', '_id name')
+    .exec((err, products) => {
+      if(err) return res.status(400).json(err);
+      res.json(products);
+    })
+  })
+}
+
+async function handleShipping() {
+  const products = await Product.find({ shipping })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+  
+  res.json(products);
+}
+
+async function handleBrand() {
+  const products = await Product.find({ brand })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+  
+  res.json(products);
+}
+
+async function handleColor() {
+  const products = await Product.find({ color })
+  .populate('category', '_id name')
+  .populate('subs', '_id name')
+  
+  res.json(products);
+}
+
+export const searchFilters = (req, res, next) => {
+  try {
+    const { query, price, category, 
+      stars, sub, shipping, color, brand } = req.body;
+
+    if(query) { 
+      handleQuery(req, res, query);
+    }
+    if(price) {
+      handlePrice(req, res, price);
+    }
+    if(category) {
+      handleCategory(req, res, category);
+    }
+    if(stars) {
+      handleStars(req, res, stars);
+    }
+    if(sub) {
+      handleSub(req, res, sub);
+    }
+    if(shipping) {
+      handleShipping(req, res, shipping);
+    }
+    if(brand) {
+      handleBrand(req, res, brand);
+    }
+    if(color) {
+      handleColor(req, res, color);
+    }
+  } catch (e) {
+    next({ msg: e });
+  }
+}

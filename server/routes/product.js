@@ -11,7 +11,8 @@ import {
     list,
     productsCount,
     starProduct,
-    listRelated
+    listRelated,
+    searchFilters
 } from '../controllers/product'
 
 router.get('/products', read)
@@ -25,4 +26,5 @@ router.get('/total', productsCount);
 router.put('/product/star/:id', authCheck, starProduct);
 router.get('/product/related/:id', listRelated);
 
+router.post('/search/filters', searchFilters);
 module.exports = router;
