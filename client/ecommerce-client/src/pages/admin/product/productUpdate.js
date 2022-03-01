@@ -13,6 +13,7 @@ const ProductUpdate = () => {
     let { user } = useSelector(state => ({ ...state }))
     let [loading, setLoading] = useState(false)
     let [subOptions, setSubOptions] = useState([])
+    let [subsActive, setSubsActive] = useState(false)
     const [subsIds, setSubsIds] = useState([]);
     const { slug } = useParams();
 
@@ -38,15 +39,7 @@ const ProductUpdate = () => {
 
     const loadProduct = () => {
         getProduct(slug).then(({ data }) => {
-            //load single product
             setValues({...values, ...data})
-            //load single product category's subs
-            getCategorySub(data.category._id)
-            .then(res => setSubOptions(res.data)); //on first load show default subs
-            //prepare array of subs ids to show as default sub values in antd select
-            let arr = [];
-            data.subs.forEach(s => arr.push(s._id));
-            setSubsIds(() => arr);
         })
     }
 
@@ -85,6 +78,7 @@ const ProductUpdate = () => {
             loadProduct();
         }
         setSubsIds([]);
+        setSubsActive(true);
     }
 
     return (
@@ -115,6 +109,7 @@ const ProductUpdate = () => {
                         categories={categories}
                         subsIds={subsIds}
                         setSubsIds={setSubsIds}
+                        subsActive={subsActive}
                     />
                 </div>
             </div>

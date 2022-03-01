@@ -6,7 +6,7 @@ import RegisterComplete from './pages/auth/RegisterComplete'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import Home from './pages/Home'
 import Header from './components/nav/header'
-import { ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
 import { CreateOrGetUser } from './functions/UserInfo'
@@ -23,6 +23,7 @@ import subUpdate from './pages/admin/sub/SubUpdate'
 import ProductCreate from './pages/admin/product/ProductCreate'
 import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/productUpdate';
+import Product from './pages/Product';
 
 let App = () => {
   let dispatch = useDispatch()
@@ -45,6 +46,7 @@ let App = () => {
               }
             })
           })
+          .catch(err => console.log(err));
       }
     })
     return () => unsubscribe()
@@ -61,6 +63,9 @@ let App = () => {
           component={RegisterComplete} />
         <Route exact path="/forgot-password"
           component={ForgotPassword} />
+           <Route exact path="/product/:slug"
+          component={Product} />
+          
              <UserRoute exact path="/user/history"
           component={History} />
             <UserRoute exact path="/user/change-password"

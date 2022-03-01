@@ -36,6 +36,19 @@ export const listProducts = (sort, page, order) => {
 
 export const getProductsCount = () => {
   return axios.get(
-    `${process.env.REACT_APP_API}/products/total`
+    `${process.env.REACT_APP_API}/total`
+  );
+};
+
+export const starProduct = (id, star, token) => {
+ return axios
+ .put(`${process.env.REACT_APP_API}/product/star/${id}`, { star }, {
+   headers: { authToken: token }
+ })
+};
+
+export const getRelated = (id) => {
+  return axios.get(
+    `${process.env.REACT_APP_API}/product/related/${id}`
   );
 };

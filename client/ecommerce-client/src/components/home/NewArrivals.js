@@ -16,29 +16,36 @@ let NewArrivals = () => {
 
   useEffect(() => {
     getProductsCount()
-    .then(({ data }) => setProductsCount(data));
+    .then(({ data }) => {
+      setProductsCount(data);
+    })
+    .catch(err => console.log('err', err));
   }, []);
 
   async function loadAllProducts() {
     setLoading(true);
     const { data } = await listProducts('createdAt', page, 'desc')
     setProducts(data.products);
-    setTimeout(() => setLoading(false), 2000);
+    setTimeout(() => setLoading(false), 1000);
   }
   return (
       <div className="container">
-     { loading ? <LoadingCard count={page}/> :  <div className="row">
+     { loading ? <LoadingCard count={productsCount - page}/> :  <div className="row">
           {products.map((product) => (
               <div className="col-md-4" key={product._id}>
             <ProductCard product={product} />
               </div>
           ))}
         </div>}
+      <div className="row">
+        <nav className="col-md-4 offset-md-4 text-center p-2">
         <Pagination 
         current={page} 
-        total={(productsCount  / 3) * 10}
+        total={(productsCount/ 3) * 10}
         onChange={val => setPage(val)}
         />
+        </nav>
+      </div>
       </div>
   );
 };

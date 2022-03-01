@@ -14,14 +14,21 @@ let Login = ({ history }) => {
     let { user } = useSelector(state => ({ ...state }))
 
     useEffect(() => {
+        const intended = history.location.state;
+        if(intended) return;        
         if(user && user.token) history.push('/')
     }, [user, history])
 
     const roleBasedRedirect = response => {
-        if(response.data.role === 'admin') {
-            history.push('/admin/dashboard')
+        const intended = history.location.state;
+        if(intended) {
+            history.push(intended.from);
         } else {
-            history.push('/user/history')
+            if(response.data.role === 'admin') {
+                history.push('/admin/dashboard')
+            } else {
+                history.push('/user/history')
+            }
         }
     }
 

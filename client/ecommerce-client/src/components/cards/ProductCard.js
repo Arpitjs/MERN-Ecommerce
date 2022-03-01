@@ -2,11 +2,19 @@ import React from 'react'
 import { Card } from 'antd';
 import {EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import {Link } from 'react-router-dom';
+import ShowAverage from '../../functions/ratings';
 const { Meta } = Card;
 
 const ProductCard = ({ product }) => {
-    const { images, title, description } = product;
+    const { images, title, description, slug } = product;
   return (
+    <>
+         { product && product.ratings && product.ratings.length ? 
+        ShowAverage(product) : 
+        <div className="text-center pt-1 pb-3">
+          NO rating yet!
+          </div>
+        }
       <Card
       cover={
         <img
@@ -16,13 +24,13 @@ const ProductCard = ({ product }) => {
           src={
             images && images.length
               ? images[0].url
-              : 'https://img.search.brave.com/Ih-g5_hyvI8117NA52yGmf68mWw9ZIHfE7NZ7sDCGL4/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly9iZXRh/bmV3cy5jb20vd3At/Y29udGVudC91cGxv/YWRzLzIwMTQvMTEv/ZnJvbnQuanBn'
+              : process.env.PUBLIC_URL + '/images/laptop3.jpg'
           }
         />
       }
         actions={[
          <div style={{ display: 'flex' }}>
-            <Link>
+            <Link to={`/product/${slug}`}>
               <EyeOutlined className="text-warning" />
               <br /> View Product
             </Link>,
@@ -38,6 +46,7 @@ const ProductCard = ({ product }) => {
         }...`}
       />
       </Card>
+      </>
   )
 }
 

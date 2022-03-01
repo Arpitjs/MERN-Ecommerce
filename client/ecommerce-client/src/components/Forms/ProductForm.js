@@ -11,11 +11,10 @@ const ProductForm = ({
   subOptions,
   loading,
   handleCategoryChange,
-  categories,
-  subsIds,
-  setSubsIds
+  categories
 }) => {
   return (
+    <>
     <form onSubmit={handleSubmit}>
       <div className="form-group">
         <label>Title</label>
@@ -38,38 +37,35 @@ const ProductForm = ({
           onChange={handleChange}
         />
       </div>
-      <div className="form-group">
+
+     { edit ? 
+     <div className="form-group">
+     <label>Categories</label>
+     <select
+       name="category"
+       className="form-control"
+       onChange={handleCategoryChange}
+     >
+       <option>Please select</option>
+       {categories.length &&
+         categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+     </select>
+   </div>
+     
+     : <div className="form-group">
         <label>Categories</label>
         <select
           name="category"
           className="form-control"
           onChange={handleCategoryChange}
-          value={values.category}
         >
-        { !edit && <option>
-          Please select a category!
-          </option>}
-
-          {edit &&
-            categories.length &&
-            categories
-            .map((c) => (
-              <option key={c._id} value={c._id}>
-                {c.name}
-              </option>
-            ))}
-
-          {!edit &&
-            values.categories.length &&
-            values.categories.map((c) => (
-              <option key={c._id} value={c._id}>
-                {c.name}
-              </option>
-            ))}
+          <option>Please select</option>
+          {values.categories.length &&
+            values.categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
         </select>
-      </div>
+      </div>}
 
-      {!edit && subsActive && (
+      {subsActive && (
         <div>
           <label>Sub Categories</label>
           <Select
@@ -88,26 +84,7 @@ const ProductForm = ({
           </Select>
         </div>
       )}
-      { edit && (
-        <div>
-          <label>Sub Categories</label>
-          <Select
-            mode="multiple"
-            style={{ width: "100%" }}
-            placeholder="Please Select"
-            value={subsIds}
-            onChange={(val) => setSubsIds(val)}
-          >
-            {subOptions.length &&
-              subOptions.map((option) => (
-                <Option key={option._id} value={option._id}>
-                  {option.name}
-                </Option>
-              ))}
-          </Select>
-        </div>
-      )}
-
+    
       <br />
       <div className="form-group">
         <label>Price</label>
@@ -182,6 +159,7 @@ const ProductForm = ({
         <button className="btn btn-outline-info">Save</button>
       )}
     </form>
+    </>
   );
 };
 

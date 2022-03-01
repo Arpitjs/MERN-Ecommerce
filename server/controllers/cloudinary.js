@@ -1,11 +1,11 @@
 import cloudinary from 'cloudinary'
 
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
-})
-
+    cloud_name: 'arpit7xx',
+    api_key: '797233148615947',
+    api_secret: 'lsXgwHBZbYvwOaZZssmrBCrKh0o'
+  })
+  
 export const upload = async (req, res, next) => {
     // console.log('IMAGE', req.body.image)
     try {

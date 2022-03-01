@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-responsive-carousel": "^3.2.22",
+    "react-star-ratings": "^2.3.0"
+  }
+}

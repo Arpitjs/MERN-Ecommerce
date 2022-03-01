@@ -9,7 +9,9 @@ import {
     remove,
     readByCount,
     list,
-    productsCount
+    productsCount,
+    starProduct,
+    listRelated
 } from '../controllers/product'
 
 router.get('/products', read)
@@ -19,6 +21,8 @@ router.put('/product/:slug', authCheck, adminCheck, update)
 router.delete('/product/:slug', authCheck, adminCheck, remove)
 router.get('/product/:slug', readOne);
 router.get('/list', list);
-router.get('/products/total', productsCount);
+router.get('/total', productsCount);
+router.put('/product/star/:id', authCheck, starProduct);
+router.get('/product/related/:id', listRelated);
 
-module.exports = router
+module.exports = router;
