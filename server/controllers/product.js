@@ -224,30 +224,6 @@ async function handleSub(req, res, sub) {
   })
 }
 
-async function handleShipping() {
-  const products = await Product.find({ shipping })
-  .populate('category', '_id name')
-  .populate('subs', '_id name')
-  
-  res.json(products);
-}
-
-async function handleBrand() {
-  const products = await Product.find({ brand })
-  .populate('category', '_id name')
-  .populate('subs', '_id name')
-  
-  res.json(products);
-}
-
-async function handleColor() {
-  const products = await Product.find({ color })
-  .populate('category', '_id name')
-  .populate('subs', '_id name')
-  
-  res.json(products);
-}
-
 export const searchFilters = (req, res, next) => {
   try {
     const { query, price, category, 
@@ -267,15 +243,6 @@ export const searchFilters = (req, res, next) => {
     }
     if(sub) {
       handleSub(req, res, sub);
-    }
-    if(shipping) {
-      handleShipping(req, res, shipping);
-    }
-    if(brand) {
-      handleBrand(req, res, brand);
-    }
-    if(color) {
-      handleColor(req, res, color);
     }
   } catch (e) {
     next({ msg: e });

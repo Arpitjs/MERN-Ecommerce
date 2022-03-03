@@ -1,5 +1,6 @@
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Card, Tabs } from "antd";
+import { Card, Tabs, Tooltip } from "antd";
+import { useState } from 'react'
 import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
@@ -7,11 +8,42 @@ import ProductInfo from "./ProductInfo";
 import StarRating from "react-star-ratings";
 import RatingModal from "../modals/RatingModal";
 import ShowAverage from "../../functions/ratings";
+import _ from 'lodash';
+import { useDispatch } from 'react-redux';
 
 const { TabPane } = Tabs;
 
 const SingleProduct = ({ product, onStarClicked, star }) => {
+  const [toolTip, setToolTip] = useState('Click to Add..')
+  const dispatch = useDispatch();
+
   const { title, images, slug, description, _id } = product;
+
+  function handleAddToCart() {
+    let cart = [];
+  if (typeof window !== "undefined") {
+    if (localStorage.getItem("cart")) {
+      cart = JSON.parse(localStorage.getItem("cart"));
+    }
+    cart.push({
+      ...product,
+      count: 1,
+    });
+    let unique = _.uniqWith(cart, _.isEqual);
+    localStorage.setItem("cart", JSON.stringify(unique));
+    setToolTip("Added");
+
+    dispatch({
+      type: "ADD_TO_CART",
+      payload: unique,
+    });
+
+    dispatch({
+      type: "SET_VISIBLE",
+      payload: true,
+    });
+  }
+  }
   return (
     <>
       <div className="col-md-7">
@@ -53,7 +85,14 @@ const SingleProduct = ({ product, onStarClicked, star }) => {
         <Card
           actions={[
             <>
-              <ShoppingCartOutlined className="text-success" /> Add to Cart
+              <Tooltip title={toolTip}>
+          <button onClick={handleAddToCart} 
+            style={{border: 'none', background: 'white'}}
+            >
+            <ShoppingCartOutlined  className='text-danger'/>
+            </button>
+          </Tooltip>
+          <br /> Add to Card
             </>,
             <Link to={`/product/${slug}`}>
               <br />

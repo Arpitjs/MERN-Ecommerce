@@ -6,7 +6,7 @@ import RegisterComplete from './pages/auth/RegisterComplete'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import Home from './pages/Home'
 import Header from './components/nav/header'
-import { toast, ToastContainer } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 import { auth } from './firebase'
 import { useDispatch } from 'react-redux'
 import { CreateOrGetUser } from './functions/UserInfo'
@@ -25,6 +25,8 @@ import AllProducts from './pages/admin/product/AllProducts'
 import ProductUpdate from './pages/admin/product/productUpdate';
 import Product from './pages/Product';
 import Shop from './pages/Shop';
+import Cart from './pages/Cart';
+import SideDrawer from './components/modals/SideDrawer';
 
 let App = () => {
   let dispatch = useDispatch()
@@ -32,7 +34,6 @@ let App = () => {
   useEffect(() => {
     let unsubscribe = auth.onAuthStateChanged(async user => {
       if (user) {
-        // console.log('USER', user)
         let idTokenResult = await user.getIdTokenResult()
         CreateOrGetUser(idTokenResult, '/current-user')
           .then(response => {
@@ -55,8 +56,10 @@ let App = () => {
   return (
     <>
       <Header />
+      <SideDrawer />
       <ToastContainer />
       <Switch>
+
         <Route exact path="/" component={Home} />
         <Route exact path="/Login" component={Login} />
         <Route exact path="/Register" component={Register} />
@@ -68,6 +71,8 @@ let App = () => {
           component={Product} />
              <Route exact path="/shop"
           component={Shop} />
+            <Route exact path="/cart"
+          component={Cart} />
           
              <UserRoute exact path="/user/history"
           component={History} />
@@ -75,6 +80,7 @@ let App = () => {
           component={Password} />
             <UserRoute exact path="/user/wishlist"
           component={Wishlist} />
+
             <AdminRoute exact path="/admin/dashboard"
           component={AdminDashboard} />
             <AdminRoute exact path="/admin/category"
