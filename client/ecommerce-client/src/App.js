@@ -27,6 +27,7 @@ import Product from './pages/Product';
 import Shop from './pages/Shop';
 import Cart from './pages/Cart';
 import SideDrawer from './components/modals/SideDrawer';
+import Checkout from './pages/Checkout';
 
 let App = () => {
   let dispatch = useDispatch()
@@ -73,6 +74,8 @@ let App = () => {
           component={Shop} />
             <Route exact path="/cart"
           component={Cart} />
+              <Route exact path="/checkout"
+          component={Checkout} />
           
              <UserRoute exact path="/user/history"
           component={History} />

@@ -1,7 +1,6 @@
 import ModalImage from "react-modal-image";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -33,10 +32,6 @@ const ProductCardCheckout = ({ product }) => {
     }
   }
   function handleQuantityChange(value) {
-      if(value > product.quantity) {
-          toast('Exceeded total quantity in stock.');
-          return;
-      }
     let cart = [];
     if (localStorage.getItem("cart")) {
       cart = JSON.parse(localStorage.getItem("cart"));
@@ -74,7 +69,6 @@ const ProductCardCheckout = ({ product }) => {
 
   return (
   <>
-  { JSON.stringify(product.quantity) }
     <tbody>
       <tr>
         <td>

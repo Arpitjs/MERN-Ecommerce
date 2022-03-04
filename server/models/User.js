@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-let { ObjectId } = mongoose.Schema
 
 let userSchema = new mongoose.Schema({
     name: String,

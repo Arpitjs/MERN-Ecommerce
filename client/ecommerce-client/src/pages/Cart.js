@@ -1,9 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ProductCardCheckout from "../components/cards/ProductCardCheckout";
+import { userCart } from "../functions/UserInfo";
 
-const Cart = () => {
-  const dispatch = useDispatch();
+const Cart = ({ history }) => {
   const { cart, user } = useSelector((state) => ({ ...state }));
 
   function showCartItems() {
@@ -30,6 +30,12 @@ const Cart = () => {
 
   function saveOrder() {
       //save to db
+      userCart(cart, user.token)
+      .then(res => {
+        console.log(res.data);
+        if(res.data.ok) history.push('/checkout');
+      })
+      .catch(err => console.log(err));
   }
 
   return (
