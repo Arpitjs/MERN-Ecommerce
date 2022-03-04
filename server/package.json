@@ -21,5 +21,34 @@
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0",
     "slugify": "^1.6.1"
-  }
+  },
+  "devDependencies": {
+    "eslint": "^8.10.0"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "env": {
+        "es6": true,
+        "browser": true
+    },
+    "rules": {
+        "brace-style": [
+            "error",
+            "stroustrup"
+        ],
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
+        "no-unused-vars": [
+            "warn"
+        ],
+        "no-var": [
+            "off"
+        ],
+        "one-var": [
+            "off"
+        ]
+    }
+}
 }

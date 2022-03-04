@@ -1,6 +1,8 @@
 import User from "../models/User";
 import Product from "../models/Product";
 import Cart from "../models/Cart";
+import Coupon from '../models/Coupon';
+
 export const userCart = async (req, res, next) => {
   try {
     const { cart } = req.body;
@@ -48,8 +50,8 @@ export const getUserCart = async (req, res, next) => {
         const user = await User.findOne({ email:  req.user.email });
         const cart = await Cart.findOne({ orderedBy: user._id })
         .populate('products.product', '_id title price totalAfterDiscount');
-        const { products, cartTotal, totalAfterDiscount } = cart;
-        res.json({ products, cartTotal, totalAfterDiscount });
+        const { products, cartTotal } = cart;
+        res.json({ products, cartTotal });
     } catch (e) {
         next({ msg: e });
     }
@@ -65,7 +67,6 @@ export const emptyUserCart = async (req, res, next) => {
   }
 }
 
-
 export const saveAddress = async (req, res, next) => {
   try {
     await User.findOneAndUpdate({ email: req.user.email }, {
@@ -75,4 +76,33 @@ export const saveAddress = async (req, res, next) => {
   } catch (e) {
       next({ msg: e });
   }
+}
+
+export const applyCoupon = async(req, res, next) => {
+  const { coupon } = req.body;
+  try {
+    const validCoupon = await Coupon.findOne({ name: coupon });
+    if(!validCoupon) {
+      return next({ msg: 'Invalid Coupon!' });
+    }
+    //now discount from the cart.
+    const user = await User.findOne({ email: req.user.email });
+
+    const { cartTotal } = await Cart
+    .findOne({ orderedBy: user._id })
+    .populate('products.product', '_id title price');
+
+    const totalAfterDiscount =
+     (cartTotal - (cartTotal * validCoupon.discount) /100).toFixed(2);
+
+     await Cart.
+     findOneAndUpdate({ orderedBy: user._id }, 
+      { totalAfterDiscount },
+      { new: true });
+
+      res.json(totalAfterDiscount);
+
+  } catch (e) {
+      next({ msg: e });
+  } 
 }
