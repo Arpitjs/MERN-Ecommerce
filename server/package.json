@@ -1,54 +1,55 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon -r esm app.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cloudinary": "^1.27.1",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "esm": "^3.2.25",
-    "express": "^4.17.1",
-    "express-jwt": "^6.1.0",
-    "firebase-admin": "^10.0.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.0.12",
-    "morgan": "^1.10.0",
-    "slugify": "^1.6.1"
-  },
-  "devDependencies": {
-    "eslint": "^8.10.0"
-  },
-  "eslintConfig": {
-    "extends": "airbnb-base",
-    "env": {
-        "es6": true,
-        "browser": true
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon -r esm app.js"
     },
-    "rules": {
-        "brace-style": [
-            "error",
-            "stroustrup"
-        ],
-        "comma-dangle": [
-            "error",
-            "never"
-        ],
-        "no-unused-vars": [
-            "warn"
-        ],
-        "no-var": [
-            "off"
-        ],
-        "one-var": [
-            "off"
-        ]
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cloudinary": "^1.27.1",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "esm": "^3.2.25",
+        "express": "^4.17.1",
+        "express-jwt": "^6.1.0",
+        "firebase-admin": "^10.0.0",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.0.12",
+        "morgan": "^1.10.0",
+        "slugify": "^1.6.1",
+        "stripe": "^8.207.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.10.0"
+    },
+    "eslintConfig": {
+        "extends": "airbnb-base",
+        "env": {
+            "es6": true,
+            "browser": true
+        },
+        "rules": {
+            "brace-style": [
+                "error",
+                "stroustrup"
+            ],
+            "comma-dangle": [
+                "error",
+                "never"
+            ],
+            "no-unused-vars": [
+                "warn"
+            ],
+            "no-var": [
+                "off"
+            ],
+            "one-var": [
+                "off"
+            ]
+        }
     }
-}
 }
