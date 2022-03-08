@@ -1,7 +1,5 @@
 import User from "../models/User";
 import Cart from "../models/Cart";
-import Product from "../models/Product";
-import Coupon from "../models/Coupon";
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 export const createPayment = async (req, res, next) => {
@@ -14,7 +12,7 @@ export const createPayment = async (req, res, next) => {
     });
     //create payment intent with order amt & currency
     let finalPrice = 0;
-    req.body.coupon ? finalPrice = totalAfterDiscount * 100 : finalPrice = cartTotal * 100
+    req.body.coupon ? finalPrice = parseInt(totalAfterDiscount) * 100 : finalPrice = parseInt(cartTotal) * 100
     const paymentIntent = await stripe.paymentIntents.create({
       amount: finalPrice,
       currency: "usd",

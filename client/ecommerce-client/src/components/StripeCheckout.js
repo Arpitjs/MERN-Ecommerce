@@ -5,10 +5,11 @@ import { createPaymentIntent } from "../functions/stripe";
 import "../stripe.css";
 import { Link } from "react-router-dom";
 import { Card } from "antd";
+import { creatOrder, emptyUserCart } from "../functions/UserInfo";
 import { DollarOutlined, CheckOutlined } from "@ant-design/icons";
 
 const StripeCheckout = ({ history }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { user, coupon } = useSelector((state) => state);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
@@ -47,6 +48,19 @@ const StripeCheckout = ({ history }) => {
       setError(null);
       setProcessing(false);
       setSuccess(true);
+      const { data } = await creatOrder(payload, user.token);
+      if (data.ok) {
+        localStorage.removeItem("cart");
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: [],
+        });
+        dispatch({
+          type: "COUPON_APPLIED",
+          payload: false,
+        });
+        await emptyUserCart(user.token);
+      }
     }
   }
 
@@ -94,23 +108,20 @@ const StripeCheckout = ({ history }) => {
               style={{
                 height: "200px",
                 objectFit: "cover",
-                margin: "20px 0px -70px -200px",
+                marginBottom: "-50px",
+                marginLeft: "-200px",
               }}
             />
           }
           actions={[
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "50px",
-              }}
-            >
-              <DollarOutlined className="text-info"/>
-              Total: ${cartTotal}
-              <CheckOutlined className="text-info" />
-              Total Payable: ${(payable / 100).toFixed(2)}
-            </div>,
+            <>
+              <DollarOutlined className="text-info" /> <br /> Total: $
+              {cartTotal}
+            </>,
+            <>
+              <CheckOutlined className="text-info" /> <br /> Total payable : $
+              {(payable / 100).toFixed(2)}
+            </>,
           ]}
         />
       </div>
@@ -137,8 +148,7 @@ const StripeCheckout = ({ history }) => {
         <br />
         <p className={success ? "result-message" : "result-message hidden"}>
           Payment sucessful!
-          <br />
-          <Link to="/user/history">See in purchase history</Link>
+          <Link to="/user/history"> See in purchase history</Link>
         </p>
       </form>
     </>

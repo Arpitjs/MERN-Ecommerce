@@ -59,3 +59,23 @@ export const saveAddress = (address, token) => {
     }
   );
 };
+
+export const creatOrder = (stripeResponse, token) => {
+  return axios.post(
+    `${process.env.REACT_APP_API}/user/order`,
+    { stripeResponse },
+    {
+      headers: { authToken: token },
+    }
+  );
+};
+
+
+export const getUserOrders = (token) => {
+  return axios.get(
+    `${process.env.REACT_APP_API}/user/orders`,
+    {
+      headers: { authToken: token },
+    }
+  );
+};

@@ -2,6 +2,7 @@ import User from "../models/User";
 import Product from "../models/Product";
 import Cart from "../models/Cart";
 import Coupon from '../models/Coupon';
+import Order from '../models/Order';
 
 export const userCart = async (req, res, next) => {
   try {
@@ -105,4 +106,44 @@ export const applyCoupon = async(req, res, next) => {
   } catch (e) {
       next({ msg: e });
   } 
+}
+
+
+export const createOrder = async (req, res, next) => {
+    const { paymentIntent } = req.body.stripeResponse;
+  const user = await User.findOne({ email: req.user.email });
+  const { products } = await Cart.findOne({ orderedBy: user._id });
+
+  try {
+      await Order.create({
+          products,
+          paymentIntent,
+          orderedBy: user._id
+      })
+      //decrement quantity, increment sold
+      const bulkOption = products.map(item => {
+        return {
+          updateOne: {
+            filter: { _id: item.product._id },
+            update: { $inc: { quantity: -item.count, sold: +item.count }}
+          }
+        }
+      })
+      await Product.bulkWrite(bulkOption, {});
+      res.status(200).json({ ok: true });
+  } catch (e) {
+      if(e.code === 11000) return next({ msg: 'duplicate order..'})
+      next({ msg: e })
+  }
+}
+
+export const getOrders = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.user.email });
+    const userOrders = await Order.find({ orderedBy: user._id })
+    .populate('products.product');
+      res.json(userOrders);
+  } catch (e) {
+      next({ msg: e });
+  }
 }

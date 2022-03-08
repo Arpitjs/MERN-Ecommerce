@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
   const [toolTip, setToolTip] = useState('Click to Add..')
   const dispatch = useDispatch();
 
-    const { images, title, description, slug, price } = product;
+    const { images, title, description, slug, price, quantity } = product;
 
     function handleAddToCart() {
       let cart = [];
@@ -66,14 +66,17 @@ const ProductCard = ({ product }) => {
               <EyeOutlined className="text-warning" />
               <br /> View Product
             </Link>,
+           <div className='px-5'> 
           <Tooltip title={toolTip}>
           <button onClick={handleAddToCart} 
+          disabled={quantity < 1 }
             style={{border: 'none', background: 'white'}}
             >
             <ShoppingCartOutlined  className='text-danger'/>
             </button>
           </Tooltip>
-            <br /> Add to Card
+            <br /> { quantity < 1 ? 'Out of stock' : 'Add to Cart'}
+            </div>
          </div>
             ]}
       >
