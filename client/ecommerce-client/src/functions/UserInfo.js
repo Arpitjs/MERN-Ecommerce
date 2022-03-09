@@ -79,3 +79,32 @@ export const getUserOrders = (token) => {
     }
   );
 };
+
+export const addToWishlist = (productId, token) => {
+  return axios.post(
+    `${process.env.REACT_APP_API}/user/wishlist`,
+     { productId },
+    {
+      headers: { authToken: token },
+    }
+  );
+};
+
+export const getWishlist = (token) => {
+  return axios.get(
+    `${process.env.REACT_APP_API}/user/wishlist`,
+    {
+      headers: { authToken: token },
+    }
+  );
+};
+
+export const removeFromWishlist = (productId, token) => {
+  return axios.put(
+    `${process.env.REACT_APP_API}/user/wishlist/${productId}`,
+    {},
+    {
+      headers: { authToken: token },
+    }
+  );
+};
