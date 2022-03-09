@@ -1,4 +1,4 @@
-const ShowPaymentInfo = ({ order }) => {
+const ShowPaymentInfo = ({ order, showStatus = true }) => {
   const { paymentIntent } = order;
   return (
     <div>
@@ -17,9 +17,10 @@ const ShowPaymentInfo = ({ order }) => {
         <span>
           Ordered on: {new Date(paymentIntent.created * 1000).toLocaleString()}
         </span>{" "}
-        <span className="badge bg-primary text-white">
+        <br />
+      {showStatus && <span className="badge bg-primary text-white">
           Order status: {order.orderStatus}
-        </span>{" "}
+        </span>}
       </p>
     </div>
   );

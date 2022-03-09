@@ -10,7 +10,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@david.kucsai/react-pdf-table": "^0.3.0",
         "cloudinary": "^1.27.1",
         "cors": "^2.8.5",
         "dotenv": "^10.0.0",
