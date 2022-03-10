@@ -1,10 +1,11 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import ProductCardCheckout from "../components/cards/ProductCardCheckout";
 import { userCart } from "../functions/UserInfo";
 
 const Cart = ({ history }) => {
-  const { cart, user } = useSelector((state) => ({ ...state }));
+  const dispatch = useDispatch();
+  const { cart, user, cod } = useSelector((state) => ({ ...state }));
 
   function showCartItems() {
     return (
@@ -32,11 +33,23 @@ const Cart = ({ history }) => {
       //save to db
       userCart(cart, user.token)
       .then(res => {
-        console.log(res.data);
         if(res.data.ok) history.push('/checkout');
       })
       .catch(err => console.log(err));
   }
+
+  function saveOrderAsCOD() {
+    dispatch({
+      type: 'COD',
+      payload: true
+    })
+    //save to db
+    userCart(cart, user.token)
+    .then(res => {
+      if(res.data.ok) history.push('/checkout');
+    })
+    .catch(err => console.log(err));
+}
 
   return (
     <div className="container-fluid pt-2">
@@ -70,12 +83,21 @@ const Cart = ({ history }) => {
           <b> ${getTotal()}</b>
           <hr />
           {user ? (
+            <>
             <button 
             onClick={saveOrder} 
             disabled={!cart.length}
             className="btn btn-sm btn-primary mt-2">
               Proceed to checkout..
             </button>
+            <br />
+            <button 
+            onClick={saveOrderAsCOD} 
+            disabled={!cart.length}
+            className="btn btn-sm btn-warning mt-2">
+              Pay cash on delivery..
+            </button>
+            </>
           ) : (
             <button className="btn btn-sm btn-primary mt-2">
              <Link to={{

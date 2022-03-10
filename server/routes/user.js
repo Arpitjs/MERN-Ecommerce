@@ -8,6 +8,7 @@ import {
   saveAddress,
   applyCoupon,
   createOrder,
+  createCashOrder,
   getOrders,
   addToWishlist,
   getWishlist,
@@ -23,6 +24,7 @@ router.post("/user/address", authCheck, saveAddress);
 router.post("/user/coupon", authCheck, applyCoupon);
 
 router.post('/user/order', authCheck, createOrder);
+router.post('/user/cash-order', authCheck, createCashOrder);
 router.get('/user/orders', authCheck, getOrders);
 
 router.post('/user/wishlist', authCheck, addToWishlist);

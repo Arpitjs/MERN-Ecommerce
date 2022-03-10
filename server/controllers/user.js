@@ -3,6 +3,7 @@ import Product from "../models/Product";
 import Cart from "../models/Cart";
 import Coupon from '../models/Coupon';
 import Order from '../models/Order';
+const { v4: uuidv4 } = require('uuid');
 
 export const userCart = async (req, res, next) => {
   try {
@@ -141,7 +142,8 @@ export const getOrders = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.user.email });
     const userOrders = await Order.find({ orderedBy: user._id })
-    .populate('products.product');
+    .populate('products.product')
+    .sort('-createdAt')
       res.json(userOrders);
   } catch (e) {
       next({ msg: e });
@@ -181,4 +183,46 @@ export const removeFromWishlist = async (req, res, next) => {
   } catch (e) {
       next({ msg: e });
   }
+}
+
+export const createCashOrder = async (req, res, next) => {
+  const { cod, couponApplied } = req.body;
+  if(!cod) return next({ msg: 'create cash order failed :(' })
+  //if cod is true, create order with status of cash on delivery
+const user = await User.findOne({ email: req.user.email });
+const { products, cartTotal, totalAfterDiscount } = await Cart.findOne({ orderedBy: user._id });
+let finalPrice = 0;
+    couponApplied ?
+     finalPrice = parseInt(totalAfterDiscount) * 100 
+     : finalPrice = parseInt(cartTotal) * 100
+try {
+    await Order.create({
+        products,
+        paymentIntent:  {
+          id: uuidv4(),
+          amount: finalPrice,
+          currency: 'usd',
+          status: 'Cash On Delivery',
+          created: Date.now(),
+          payment_method_types: ['cash']
+        },
+        orderedBy: user._id,
+        orderStatus: 'Cash On Delivery'
+    })
+    //decrement quantity, increment sold
+    const bulkOption = products.map(item => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { quantity: -item.count, sold: +item.count }}
+        }
+      }
+    })
+
+    await Product.bulkWrite(bulkOption, {});
+    res.status(200).json({ ok: true });
+} catch (e) {
+    if(e.code === 11000) return next({ msg: 'duplicate order..'})
+    next({ msg: e })
+}
 }

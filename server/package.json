@@ -21,7 +21,8 @@
         "mongoose": "^6.0.12",
         "morgan": "^1.10.0",
         "slugify": "^1.6.1",
-        "stripe": "^8.207.0"
+        "stripe": "^8.207.0",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
         "eslint": "^8.10.0"

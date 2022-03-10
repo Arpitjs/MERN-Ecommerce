@@ -4,17 +4,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import ReactQuill from 'react-quill';
 import { applyCoupon } from '../functions/couponInfo';
-import { getUserCart, emptyUserCart, saveAddress } from "../functions/UserInfo";
+import { getUserCart, emptyUserCart, saveAddress, createCashOrderUser } from "../functions/UserInfo";
 
 const Checkout = ({history}) => {
   const [products, setProducts] = useState([]);
-  const [coupon, setCoupon] = useState({});
+  const [couponValue, setCouponValue] = useState({});
   const [totalAferDiscount, setTotalAfterDiscount] = useState(0);
   const [address, setAddress] = useState('');
   const [total, setTotal] = useState(0);
   const [addressSaved, setAddressSaved] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const { user, cod, coupon } = useSelector((state) => state);
 
   useEffect(() => {
     getUserCart(user.token).then((res) => {
@@ -33,7 +33,7 @@ const Checkout = ({history}) => {
     setProducts([]);
     setTotal(0);
     setTotalAfterDiscount(0);
-    setCoupon('');
+    setCouponValue('');
     toast("cart is emptied...");
     localStorage.removeItem("cart");
     dispatch({
@@ -69,7 +69,7 @@ const Checkout = ({history}) => {
 
   async function applyDiscountCupon() {
     try {
-      const {data} = await applyCoupon(coupon, user.token);
+      const {data} = await applyCoupon(couponValue, user.token);
       if(data) {
         setTotalAfterDiscount(data);
         dispatch({
@@ -91,7 +91,7 @@ const Checkout = ({history}) => {
     return (
       <>
       <input type="text" 
-      onChange={e => setCoupon(e.target.value)}
+      onChange={e => setCouponValue(e.target.value)}
       className='form-control'/>
          <button 
          onClick={applyDiscountCupon}
@@ -101,7 +101,28 @@ const Checkout = ({history}) => {
       </>
     )
   }
-  
+
+  async function createCashOrder() {
+    const {data} = await createCashOrderUser(user.token, cod, coupon);
+    if (data.ok) {
+      localStorage.removeItem("cart");
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: [],
+      });
+      dispatch({
+        type: "COUPON_APPLIED",
+        payload: false,
+      });
+      dispatch({
+        type: "COD",
+        payload: false,
+      });
+      await emptyUserCart(user.token);
+      history.push('/user/history');
+    }
+  } 
+
   return (
     <div className="row">
       <div className="col-md-6">
@@ -128,12 +149,20 @@ const Checkout = ({history}) => {
         )}
         <div className="row">
           <div className="col-md-6">
-            <button 
-            disabled={!addressSaved || !products.length}
-            className="btn btn-primary"
-            onClick={() => history.push('/payment')}
-            >Place order...</button>
-          </div>
+          { cod ? 
+           <button 
+           disabled={!addressSaved || !products.length}
+           className="btn btn-primary"
+           onClick={createCashOrder}
+           >Place order...</button>
+          : 
+             <button 
+             disabled={!addressSaved || !products.length}
+             className="btn btn-primary"
+             onClick={() => history.push('/payment')}
+             >Place order...</button>
+          }
+           </div>
           <div className="col-md-6">
             <button
               disabled={!products.length}

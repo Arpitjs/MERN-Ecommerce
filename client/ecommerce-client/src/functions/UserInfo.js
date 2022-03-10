@@ -108,3 +108,13 @@ export const removeFromWishlist = (productId, token) => {
     }
   );
 };
+
+export const createCashOrderUser = (token, cod, coupon) => {
+  return axios.post(
+    `${process.env.REACT_APP_API}/user/cash-order`,
+    { cod, couponApplied: coupon },
+    {
+      headers: { authToken: token },
+    }
+  );
+};
