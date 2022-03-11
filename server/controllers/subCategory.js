@@ -1,5 +1,6 @@
 import SubCategory from '../models/SubCategory'
 import slugify from 'slugify'
+import Product from '../models/Product'
 
 export const create = async (req, res, next) => {
     let { name, parent } = req.body
@@ -32,7 +33,9 @@ export const read = async (req, res, next) => {
         let subCategory = await SubCategory
         .findOne({ slug: req.params.slug })
         if(!subCategory) return next({ msg: 'no such sub category found.', status: 404 })
-        res.json(subCategory)
+        const products = await Product.find({ subs: subCategory._id })
+        .populate('subs')
+        res.json({ subCategory, products })
     } catch (e) {
         next({ msg: e })
     }

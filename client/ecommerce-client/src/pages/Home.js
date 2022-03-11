@@ -1,6 +1,8 @@
 import Jumbrotron from '../components/cards/Jumbotron';
 import BestSellers from '../components/home/BestSellers';
 import NewArrivals from "../components/home/NewArrivals";
+import CategoryList from '../components/category/CategoryList'
+import SubCategoryList from  '../components/category/SubCatList';
 
 let Home = () => {
 
@@ -13,6 +15,10 @@ let Home = () => {
       <NewArrivals />
       <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">Best Sellers</h4>
       <BestSellers />
+      <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">Categories</h4>
+      <CategoryList />
+      <h4 className="text-center p-3 mt-5 mb-5 display-4 jumbotron">Sub Categories</h4>
+      <SubCategoryList />
       <br />
     </>
   );
